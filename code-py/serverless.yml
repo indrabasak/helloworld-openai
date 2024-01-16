@@ -87,7 +87,8 @@ functions:
         - data/**
     memorySize: 512
     timeout: 30
-    reservedConcurrency: 1
+    reservedConcurrency: 5
+    provisionedConcurrency: 1
     role: FileSearchLambdaRole
     vpc:
       securityGroupIds:
