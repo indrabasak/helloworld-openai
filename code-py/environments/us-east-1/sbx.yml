@@ -1,0 +1,16 @@
+---
+moniker: 123456-C-UE1
+logLevel: debug
+subnetIds:
+  - subnet-0bbd4777f2fcb70a0
+  - subnet-0bd65274dde9a924a
+  - subnet-005631133d82f3524
+vpcId: vpc-0831d6a75e6bd4610
+lambda-scheduler-provisionedConcurrency: 1
+lambda-scheduler-reservedConcurrency: 5
+lambda-post-db-provisionedConcurrency: 1
+lambda-post-db-reservedConcurrency: 5
+lambda-diff-provisionedConcurrency: 1
+lambda-diff-reservedConcurrency: 5
+lambda-notifier-provisionedConcurrency: 1
+lambda-notifier-reservedConcurrency: 5

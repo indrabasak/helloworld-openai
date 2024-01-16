@@ -1,0 +1,14 @@
+Resources:
+  LambdaSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    DeletionPolicy: Retain
+    Properties:
+      GroupName: ${self:service}-lambda-sg
+      GroupDescription: Allow all outbound traffic, no inbound
+      SecurityGroupIngress:
+        - IpProtocol: -1
+          CidrIp: 127.0.0.1/32
+      VpcId: ${self:custom.config.vpcId}
+      Tags:
+        - Key: 'adsk:moniker'
+          Value: ${self:custom.config.moniker}

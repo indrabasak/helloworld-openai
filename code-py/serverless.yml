@@ -1,0 +1,111 @@
+service: helloworld-openaipy
+frameworkVersion: '3'
+
+useDotenv: true
+
+custom:
+  baseAppName: openaipy
+  config: ${file(./environments/${self:provider.region}/${opt:stage, self:provider.stage, 'sbx'}.yml)}
+  deploymentBucket:
+    name: ${self:service}-deployments-${self:provider.region}-${aws:accountId}
+    policy:
+      Version: 2008-10-17
+      Statement:
+        - Effect: Deny
+          Principal: '*'
+          Action: s3:*
+          Resource:
+            - arn:aws:s3:::${self:service}-deployments-${aws:region}-${aws:accountId}/*
+            - arn:aws:s3:::${self:service}-deployments-${aws:region}-${aws:accountId}
+          Condition:
+            Bool:
+              aws:SecureTransport: 'false'
+    blockPublicAccess: true
+    skipPolicySetup: false
+    versioning: true
+    tags:
+      - Key: STAGE
+        Value: ${opt:stage, 'sbx'}
+      - Key: 'adsk:moniker'
+        Value: ${self:custom.config.moniker}
+    debug: true
+  pythonRequirements:
+#    dockerFile: Dockerfile
+
+    # call `pip install` inside a container - useful for packages that have native dependencies (scipy et-al)
+    dockerizePip: true
+
+    # aws lambda has an after-extraction size limit - with native dependencies we pass the limit quickly
+    # zip the requirements and extract them on the fly
+    zip: true
+
+provider:
+  name: aws
+  stage: ${opt:stage, 'sbx'}
+  region: ${opt:region, 'us-east-1'}
+  cfnRole: arn:aws:iam::${aws:accountId}:role/AdskCfnAdministratorAccessExecutionRole
+  runtime: python3.11
+
+package:
+  individually: true
+  # exclude everything...
+  exclude:
+    - '**/*'
+
+  # include - we have to explicitly list packages with native dependencies.
+  include:
+    - 'cryptography'
+    - '.requirements.zip'
+
+functions:
+  hello:
+    name: ${self:service}-hello
+    handler: hello/index.handler
+    package:
+      include:
+        - hello/**
+    memorySize: 512
+    reservedConcurrency: 1
+    role: HelloLambdaRole
+    vpc:
+      securityGroupIds:
+        - Ref: LambdaSecurityGroup
+      subnetIds: ${self:custom.config.subnetIds}
+    events:
+      - http:
+          path: helloaipy/v1/hello/
+          method: get
+          cors: true
+
+  file-search:
+    name: ${self:service}-file-search
+    handler: index.handler
+    package:
+      include:
+        - index.py
+        - common/**
+        - data/**
+    memorySize: 512
+    timeout: 30
+    reservedConcurrency: 1
+    role: FileSearchLambdaRole
+    vpc:
+      securityGroupIds:
+        - Ref: LambdaSecurityGroup
+      subnetIds: ${self:custom.config.subnetIds}
+    events:
+      - http:
+          path: helloaipy/v1/filesearch/
+          method: post
+          cors: true
+
+resources:
+  - ${file(./resources/sg-lambda-vpc.yml)}
+  - ${file(./resources/role-hello-lambda.yml)}
+  - ${file(./resources/role-file-search-lambda.yml)}
+
+plugins:
+  - serverless-deployment-bucket
+  - serverless-python-requirements
+
+

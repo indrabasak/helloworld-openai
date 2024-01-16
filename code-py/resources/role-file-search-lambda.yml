@@ -1,0 +1,45 @@
+Resources:
+  FileSearchLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${self:service}-file-search-lambda-role-${AWS::Region}'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+      Tags:
+        - Key: 'adsk:moniker'
+          Value: ${self:custom.config.moniker}
+
+      Policies:
+        - PolicyName: ${self:service}-file-search-logs
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource:
+                  - 'Fn::Join':
+                      - ':'
+                      - - 'arn:aws:logs'
+                        - Ref: 'AWS::Region'
+                        - Ref: 'AWS::AccountId'
+                        - 'log-group:/aws/lambda/${self:service}-hello:*:*'
+
+        - PolicyName: ${self:service}-file-search-tracing
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: 'xray:*'
+                Resource: '*'
+
