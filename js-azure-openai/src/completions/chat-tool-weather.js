@@ -10,7 +10,6 @@ async function main() {
     const apiVersion = "2024-07-01-preview";
     const client = new AzureOpenAI({azureADTokenProvider, deployment, apiVersion});
 
-    // 'The capital of the United States is Washington, D.C.',
     const getCurrentWeather = {
         name: "get_current_weather",
         description: "Get the current weather in a given location",
@@ -56,22 +55,6 @@ async function main() {
         messages.push(newMessage);
         console.log(newMessage);
         console.log();
-    }
-
-
-    for (const choice of result.choices) {
-        console.log(choice.message);
-        if (choice.message.role === "assistant" && choice.message.function_call) {
-            const result = await applyToolCall(choice.message.function_call);
-            const newMessage = {
-                role: 'function',
-                name: choice.message.function_call.name,
-                content: JSON.stringify(result),
-        };
-            messages.push(newMessage);
-            console.log(newMessage);
-            console.log();
-        }
     }
 }
 
