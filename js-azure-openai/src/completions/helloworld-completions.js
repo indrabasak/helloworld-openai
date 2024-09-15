@@ -1,18 +1,18 @@
-const { DefaultAzureCredential, getBearerTokenProvider } = require("@azure/identity");
-const { AzureOpenAI } = require ("openai");
-require("dotenv").config();
+const { DefaultAzureCredential, getBearerTokenProvider } = require('@azure/identity');
+const { AzureOpenAI } = require ('openai');
+require('dotenv').config();
 
-const prompt = ["What is your name?"];
+const prompt = ['What is your name?'];
 
 async function hello() {
-    console.log("== Get completions Sample ==");
+    console.log('== Get completions Sample ==');
 
     const credential = new DefaultAzureCredential();
-    const scope = "https://cognitiveservices.azure.com/.default";
+    const scope = 'https://cognitiveservices.azure.com/.default';
     const azureADTokenProvider = getBearerTokenProvider(credential, scope);
 
-    const deployment = "gpt-35-turbo-blue";
-    const apiVersion = "2024-07-01-preview";
+    const deployment = 'gpt-35-turbo-blue';
+    const apiVersion = '2024-07-01-preview';
     const client = new AzureOpenAI({ azureADTokenProvider, deployment, apiVersion });
     //
     // const events = await client.completions.create({
@@ -28,14 +28,14 @@ async function hello() {
     // }
 
     const events = await client.chat.completions.create({
-        "messages": [
+        'messages': [
             {
-                "role": "system",
-                "content": "You are an AI assistant that helps employees."
+                'role': 'system',
+                'content': 'You are an AI assistant that helps employees.'
             },
             {
-                "role": "user",
-                "content": "Hi, what is your name?"
+                'role': 'user',
+                'content': 'Hi, what is your name?'
             }
         ],
         max_tokens: 128,
@@ -44,10 +44,10 @@ async function hello() {
 
     for await (const event of events) {
         for (const choice of event.choices) {
-            console.log("1------------");
+            console.log('1------------');
             console.log(choice.delta?.content);
             // console.log(choice.text);
-            console.log("2------------");
+            console.log('2------------');
         }
     }
 
@@ -61,7 +61,7 @@ async function hello() {
 }
 
 hello().catch((err) => {
-    console.error("The sample encountered an error:", err);
+    console.error('The sample encountered an error:', err);
 });
 
 module.exports = { hello };

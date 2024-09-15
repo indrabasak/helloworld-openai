@@ -1,35 +1,35 @@
-const {AzureOpenAI} = require("openai");
-const {DefaultAzureCredential, getBearerTokenProvider} = require("@azure/identity");
+const {AzureOpenAI} = require('openai');
+const {DefaultAzureCredential, getBearerTokenProvider} = require('@azure/identity');
 
-require("dotenv").config();
+require('dotenv').config();
 
 async function main() {
-    const scope = "https://cognitiveservices.azure.com/.default";
+    const scope = 'https://cognitiveservices.azure.com/.default';
     const azureADTokenProvider = getBearerTokenProvider(new DefaultAzureCredential(), scope);
-    const deployment = "gpt-35-turbo-blue";
-    const apiVersion = "2024-07-01-preview";
+    const deployment = 'gpt-35-turbo-blue';
+    const apiVersion = '2024-07-01-preview';
     const client = new AzureOpenAI({azureADTokenProvider, deployment, apiVersion});
 
     const getCurrentWeather = {
-        name: "get_current_weather",
-        description: "Get the current weather in a given location",
+        name: 'get_current_weather',
+        description: 'Get the current weather in a given location',
         parameters: {
-            type: "object",
+            type: 'object',
             properties: {
                 location: {
-                    type: "string",
-                    description: "The city and state, e.g. San Francisco, CA",
+                    type: 'string',
+                    description: 'The city and state, e.g. San Francisco, CA',
                 },
                 unit: {
-                    type: "string",
-                    enum: ["celsius", "fahrenheit"],
+                    type: 'string',
+                    enum: ['celsius', 'fahrenheit'],
                 },
             },
-            required: ["location"],
+            required: ['location'],
         },
     };
 
-    const messages = [{role: "user", content: "What is the weather like in Boston in fahrenheit?"}];
+    const messages = [{role: 'user', content: 'What is the weather like in Boston in fahrenheit?'}];
 
     while (true) {
         const completion = await client.chat.completions.create({
@@ -37,7 +37,7 @@ async function main() {
             functions: [getCurrentWeather]
         });
 
-        const message = completion.choices[0].message;
+        const {message} = completion.choices[0];
         messages.push(message);
         console.log(message);
 
@@ -59,24 +59,24 @@ async function main() {
 }
 
 async function applyToolCall(functionCall) {
-    console.log("1 ----------------------");
-    if (functionCall.name === "get_current_weather") {
+    console.log('1 ----------------------');
+    if (functionCall.name === 'get_current_weather') {
         console.log(functionCall);
         const { location, unit } = JSON.parse(functionCall.arguments);
-        console.log("location:" + location);
-        console.log("unit:" + unit);
+        console.log('location:' + location);
+        console.log('unit:' + unit);
 
-        console.log("2 ----------------------");
+        console.log('2 ----------------------');
         return {
-            role: "tool",
+            role: 'tool',
             content: `The weather in ${location} is 72 degrees ${unit} and sunny.`,
-        }
+        };
     }
     throw new Error(`Unknown tool call: ${functionCall.name}`);
 }
 
 main().catch((err) => {
-    console.log("The sample encountered an error:", err);
+    console.log('The sample encountered an error:', err);
 });
 
 module.exports = {main};

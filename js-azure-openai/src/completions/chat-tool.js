@@ -1,14 +1,14 @@
-const {AzureOpenAI} = require("openai");
-const {DefaultAzureCredential, getBearerTokenProvider} = require("@azure/identity");
+const {AzureOpenAI} = require('openai');
+const {DefaultAzureCredential, getBearerTokenProvider} = require('@azure/identity');
 
-require("dotenv").config();
+require('dotenv').config();
 
 
 async function main() {
-    const scope = "https://cognitiveservices.azure.com/.default";
+    const scope = 'https://cognitiveservices.azure.com/.default';
     const azureADTokenProvider = getBearerTokenProvider(new DefaultAzureCredential(), scope);
-    const deployment = "gpt-35-turbo-blue";
-    const apiVersion = "2024-07-01-preview";
+    const deployment = 'gpt-35-turbo-blue';
+    const apiVersion = '2024-07-01-preview';
     const client = new AzureOpenAI({azureADTokenProvider, deployment, apiVersion});
 
     const functions = [
@@ -35,7 +35,7 @@ async function main() {
         {
             name: 'get',
             description:
-                "get returns a book's detailed information based on the id of the book. Note that this does not accept names, and only IDs, which you can get by using search.",
+                'get returns a book\'s detailed information based on the id of the book. Note that this does not accept names, and only IDs, which you can get by using search.',
             parameters: {
                 type: 'object',
                 properties: {
@@ -64,7 +64,7 @@ async function main() {
             functions
         });
 
-        const message = completion.choices[0].message;
+        const {message} = completion.choices[0];
         messages.push(message);
         console.log(message);
 
@@ -74,7 +74,7 @@ async function main() {
         }
 
         const result = await callFunction(message.function_call);
-        console.log("result: ");
+        console.log('result: ');
         console.log(JSON.stringify(result));
         const newMessage = {
             role: 'function',
@@ -106,13 +106,13 @@ const db = [
         id: 'a1',
         name: 'To Kill a Mockingbird',
         genre: 'historical',
-        description: `Compassionate, dramatic, and deeply moving, "To Kill A Mockingbird" takes readers to the roots of human behavior - to innocence and experience, kindness and cruelty, love and hatred, humor and pathos. Now with over 18 million copies in print and translated into forty languages, this regional story by a young Alabama woman claims universal appeal. Harper Lee always considered her book to be a simple love story. Today it is regarded as a masterpiece of American literature.`,
+        description: 'Compassionate, dramatic, and deeply moving, "To Kill A Mockingbird" takes readers to the roots of human behavior - to innocence and experience, kindness and cruelty, love and hatred, humor and pathos. Now with over 18 million copies in print and translated into forty languages, this regional story by a young Alabama woman claims universal appeal. Harper Lee always considered her book to be a simple love story. Today it is regarded as a masterpiece of American literature.',
     },
     {
         id: 'a2',
         name: 'All the Light We Cannot See',
         genre: 'historical',
-        description: `In a mining town in Germany, Werner Pfennig, an orphan, grows up with his younger sister, enchanted by a crude radio they find that brings them news and stories from places they have never seen or imagined. Werner becomes an expert at building and fixing these crucial new instruments and is enlisted to use his talent to track down the resistance. Deftly interweaving the lives of Marie-Laure and Werner, Doerr illuminates the ways, against all odds, people try to be good to one another.`,
+        description: 'In a mining town in Germany, Werner Pfennig, an orphan, grows up with his younger sister, enchanted by a crude radio they find that brings them news and stories from places they have never seen or imagined. Werner becomes an expert at building and fixing these crucial new instruments and is enlisted to use his talent to track down the resistance. Deftly interweaving the lives of Marie-Laure and Werner, Doerr illuminates the ways, against all odds, people try to be good to one another.',
     },
     {
         id: 'a3',
@@ -138,7 +138,7 @@ async function get(id) {
 
 
 main().catch((err) => {
-    console.log("The sample encountered an error:", err);
+    console.log('The sample encountered an error:', err);
 });
 
 module.exports = {main};
