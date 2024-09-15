@@ -3,8 +3,14 @@
   "version": "1.0.0",
   "description": "Example Projects using Azure OpenAI JavaScript Client Library",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint --fix"
+    "lint": "eslint --fix",
+    "helloworld-completions": "node --env-file .env.local src/completions/helloworld-completions.js",
+    "chat-completions": "node --env-file .env.local src/completions/chat-completions.js",
+    "summarize-text": "node --env-file .env.local src/completions/summarize-text.js",
+    "chat-tool-weather": "node --env-file .env.local src/completions/chat-tool-weather.js",
+    "chat-tool-db": "node --env-file .env.local src/completions/chat-tool-db.js",
+    "generate-image": "node --env-file .env.img src/images/generate-image.js",
+    "generate-embeddings": "node --env-file .env.local src/embeddings/generate-embeddings.js"
   },
   "author": "Indra Basak",
   "license": "ISC",
