@@ -10,7 +10,8 @@
     "chat-tool-weather": "node --env-file .env.local src/completions/chat-tool-weather.js",
     "chat-tool-db": "node --env-file .env.local src/completions/chat-tool-db.js",
     "generate-image": "node --env-file .env.img src/images/generate-image.js",
-    "generate-embeddings": "node --env-file .env.local src/embeddings/generate-embeddings.js"
+    "generate-embeddings": "node --env-file .env.local src/embeddings/generate-embeddings.js",
+    "query-without-embeddings": "node --env-file .env.local src/embeddings/query-without-embeddings.js"
   },
   "author": "Indra Basak",
   "license": "ISC",
