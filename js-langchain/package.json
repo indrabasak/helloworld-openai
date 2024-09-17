@@ -1,0 +1,38 @@
+{
+  "name": "js-langchain",
+  "version": "1.0.0",
+  "description": "Example Projects using LangChain.js JavaScript Client Library",
+  "scripts": {
+    "lint": "eslint --fix",
+    "invoke": "node --env-file .env.local src/completions/invoke.js",
+    "chat-completions": "node --env-file .env.local src/completions/chat-completions.js",
+    "summarize-text": "node --env-file .env.local src/completions/summarize-text.js",
+    "chat-tool-weather": "node --env-file .env.local src/completions/chat-tool-weather.js",
+    "chat-tool-db": "node --env-file .env.local src/completions/chat-tool-db.js",
+    "generate-image": "node --env-file .env.img src/images/generate-image.js",
+    "generate-embeddings": "node --env-file .env.local src/embeddings/generate-embeddings.js",
+    "query-without-embeddings": "node --env-file .env.local src/embeddings/query-without-embeddings.js"
+  },
+  "author": "Indra Basak",
+  "license": "ISC",
+  "dependencies": {
+    "@azure/identity": "^4.4.1",
+    "@langchain/core": "^0.3.1",
+    "@langchain/openai": "^0.3.0",
+    "dotenv": "^16.4.5",
+    "he": "^1.2.0",
+    "readline": "^1.3.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/js": "^9.10.0",
+    "@eslint/migrate-config": "^1.3.0",
+    "eslint": "^9.10.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-formatter-table": "^7.32.1",
+    "eslint-plugin-import": "^2.30.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "prettier": "^3.3.3"
+  }
+}
