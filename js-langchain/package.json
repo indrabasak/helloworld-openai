@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "eslint --fix",
     "invoke": "node --env-file .env.local src/completions/invoke.js",
-    "chat-completions": "node --env-file .env.local src/completions/chat-completions.js",
+    "chain": "node --env-file .env.local src/completions/chain.js",
     "summarize-text": "node --env-file .env.local src/completions/summarize-text.js",
     "chat-tool-weather": "node --env-file .env.local src/completions/chat-tool-weather.js",
     "chat-tool-db": "node --env-file .env.local src/completions/chat-tool-db.js",

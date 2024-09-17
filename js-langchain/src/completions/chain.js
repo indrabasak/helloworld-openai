@@ -1,9 +1,10 @@
 const { DefaultAzureCredential, getBearerTokenProvider } = require('@azure/identity');
 const { AzureChatOpenAI } = require('@langchain/openai');
+const { ChatPromptTemplate } = require('@langchain/core/prompts');
 require('dotenv').config();
 
 async function main() {
-    console.log('== Invoke Example ==');
+    console.log('== Chain Example ==');
 
     const credential = new DefaultAzureCredential();
     const scope = 'https://cognitiveservices.azure.com/.default';
@@ -16,13 +17,20 @@ async function main() {
         azureOpenAIApiVersion: process.env.AZURE_OPENAI_API_VERSION,
     });
 
-    const result = await client.invoke([
+    const prompt = ChatPromptTemplate.fromMessages([
         [
             'system',
-            'You are an AI assistant that helps employees.'
+            'You are a helpful assistant that translates {input_language} to {output_language}.',
         ],
-        ['user', 'Hi, what is your name?'],
+        ['human', '{input}'],
     ]);
+
+    const chain = prompt.pipe(client);
+    const result = await chain.invoke({
+        input_language: 'English',
+        output_language: 'German',
+        input: 'I love programming.',
+    });
 
     console.log(result.content);
 }
