@@ -6,12 +6,10 @@
     "lint": "eslint --fix",
     "invoke": "node --env-file .env.local src/completions/invoke.js",
     "chain": "node --env-file .env.local src/completions/chain.js",
-    "summarize-text": "node --env-file .env.local src/completions/summarize-text.js",
-    "chat-tool-weather": "node --env-file .env.local src/completions/chat-tool-weather.js",
-    "chat-tool-db": "node --env-file .env.local src/completions/chat-tool-db.js",
-    "generate-image": "node --env-file .env.img src/images/generate-image.js",
-    "generate-embeddings": "node --env-file .env.local src/embeddings/generate-embeddings.js",
-    "query-without-embeddings": "node --env-file .env.local src/embeddings/query-without-embeddings.js"
+    "lesson1": " node --env-file .env.local src/deeplearningai/buildingblocks/lesson-1-language-model.js",
+    "lesson2": " node --env-file .env.local src/deeplearningai/buildingblocks/lesson-2-prompt-template.js",
+    "lesson3": " node --env-file .env.local src/deeplearningai/buildingblocks/lesson-3-lcel.js",
+    "lesson4": " node --env-file .env.local src/deeplearningai/buildingblocks/lesson-4-output-parser.js"
   },
   "author": "Indra Basak",
   "license": "ISC",

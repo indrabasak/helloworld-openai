@@ -44,6 +44,15 @@ async function main() {
     for await (const chunk of stream) {
         console.log(chunk);
     }
+
+    // batch example
+    const inputs = [
+        { product: "large calculators" },
+        { product: "alpaca wool sweaters" }
+    ];
+
+    const result =await nameGenerationChain.batch(inputs);
+    console.log(result);
 }
 
 main().catch((err) => {
