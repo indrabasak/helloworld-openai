@@ -4,7 +4,7 @@ const { HumanMessage } = require('@langchain/core/messages');
 require('dotenv').config();
 
 async function main() {
-    console.log('== Lesson 1 - Language Model Example ==');
+    console.log('== Lesson 1 - Building Blocks: Language Model Example ==');
 
     const credential = new DefaultAzureCredential();
     const scope = 'https://cognitiveservices.azure.com/.default';

@@ -4,7 +4,7 @@ const { ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTempl
 require('dotenv').config();
 
 async function main() {
-    console.log('== Lesson 3 - LangChain Expression Model Example ==');
+    console.log('== Lesson 3 - Building Blocks: LangChain Expression Model Example ==');
 
     const credential = new DefaultAzureCredential();
     const scope = 'https://cognitiveservices.azure.com/.default';

@@ -5,7 +5,7 @@ const { StringOutputParser } = require('@langchain/core/output_parsers');
 require('dotenv').config();
 
 async function main() {
-    console.log('== Lesson 4 - Output Parser Example ==');
+    console.log('== Lesson 4 - Building Blocks: Output Parser Example ==');
 
     const credential = new DefaultAzureCredential();
     const scope = 'https://cognitiveservices.azure.com/.default';
@@ -47,8 +47,8 @@ async function main() {
 
     // batch example
     const inputs = [
-        { product: "large calculators" },
-        { product: "alpaca wool sweaters" }
+        { product: 'large calculators' },
+        { product: 'alpaca wool sweaters' }
     ];
 
     const result =await nameGenerationChain.batch(inputs);

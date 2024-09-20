@@ -4,7 +4,7 @@ const { ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTempl
 require('dotenv').config();
 
 async function main() {
-    console.log('== Lesson 2 - Prompt Template Example ==');
+    console.log('== Lesson 2 - Building Blocks: Prompt Template Example ==');
 
     const credential = new DefaultAzureCredential();
     const scope = 'https://cognitiveservices.azure.com/.default';
