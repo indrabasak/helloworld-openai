@@ -1,5 +1,5 @@
 const { CharacterTextSplitter, RecursiveCharacterTextSplitter } = require('@langchain/textsplitters');
-const {PDFLoader} = require('@langchain/community/document_loaders/fs/pdf');
+const { PDFLoader } = require('@langchain/community/document_loaders/fs/pdf');
 
 async function main() {
     console.log('== Lesson 2 - Loading & Preparing Data: Splitter Example ==');
