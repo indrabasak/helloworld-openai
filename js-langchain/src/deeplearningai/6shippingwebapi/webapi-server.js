@@ -1,5 +1,3 @@
-// const Deno = require('deno');
-
 const { PDFLoader } = require('@langchain/community/document_loaders/fs/pdf');
 const { RecursiveCharacterTextSplitter } = require('@langchain/textsplitters');
 const { MemoryVectorStore } = require('langchain/vectorstores/memory');
@@ -78,17 +76,6 @@ async function getFinalRetrievalChain() {
 
   const answerGenerationPrompt
     = ChatPromptTemplate.fromTemplate(TEMPLATE_STRING);
-  console.log(answerGenerationPrompt);
-
-  // const runnableMap = RunnableMap.from({
-  //   context: documentRetrievalChain,
-  //   question: (input) => input.question,
-  // });
-  //
-  // let results = await runnableMap.invoke({
-  //   question: 'What are the prerequisites for this course?'
-  // });
-  // console.log(results);
 
   // Augmented generation
   const model = new AzureChatOpenAI({
@@ -171,31 +158,10 @@ rephrase the follow up question to be a standalone question.`;
     new StringOutputParser(),
   ]);
 
-  /*
-  const conversationalRetrievalChain = RunnableSequence.from([
-  RunnablePassthrough.assign({
-    standalone_question: rephraseQuestionChain,
-  }),
-  RunnablePassthrough.assign({
-    context: documentRetrievalChain,
-  }),
-  answerGenerationChainPrompt,
-  new ChatOpenAI({ modelName: "gpt-3.5-turbo-1106" }),
-]);
-   */
-
   // "text/event-stream" is also supported
   const httpResponseOutputParser = new HttpResponseOutputParser({
     contentType: 'text/plain'
   });
-
-  // const messageHistory = new ChatMessageHistory();
-  // finalRetrievalChain = new RunnableWithMessageHistory({
-  //   runnable: conversationalRetrievalChain,
-  //   getMessageHistory: (_sessionId) => messageHistory,
-  //   historyMessagesKey: 'history',
-  //   inputMessagesKey: 'question',
-  // }).pipe(httpResponseOutputParser);
 
   const messageHistories = {};
 
@@ -215,53 +181,9 @@ rephrase the follow up question to be a standalone question.`;
     historyMessagesKey: 'history',
   }).pipe(httpResponseOutputParser);
 
-  // const originalQuestion = 'What are the prerequisites for this course?';
-  //
-  // const originalAnswer = await finalRetrievalChain.invoke({
-  //   question: originalQuestion,
-  // }, {
-  //   configurable: { sessionId: 'test' }
-  // });
-  // console.log(originalAnswer);
-  //
-  // const finalResult = await finalRetrievalChain.invoke({
-  //   question: 'Can you list them in bullet point form?',
-  // }, {
-  //   configurable: { sessionId: 'test' }
-  // });
-  //
-  // console.log(finalResult);
   console.log('end ------------- getFinalRetrievalChain');
   return finalRetrievalChain;
 }
-
-// const handler = async (request) => {
-//   const body = await request.json();
-//   const stream = await getFinalRetrievalChain().stream({
-//     question: body.question
-//   }, { configurable: { sessionId: body.session_id } });
-//
-//   return new Response(stream, {
-//     status: 200,
-//     headers: {
-//       "Content-Type": "text/plain"
-//     },
-//   });
-// };
-
-// const handler = async (request, response) => {
-//   const body = await request.json();
-//   const stream = await getFinalRetrievalChain().stream({
-//     question: body.question
-//   }, { configurable: { sessionId: body.session_id } });
-//
-//   return new Response(stream, {
-//     status: 200,
-//     headers: {
-//       'Content-Type': 'text/plain'
-//     },
-//   });
-// };
 
 const app = express();
 app.use(express.json());
@@ -275,22 +197,17 @@ app.post('/', async (req, res) => {
     console.log('instantiating finalRetrievalChain --------------');
     finalRetrievalChain = await getFinalRetrievalChain();
   }
+
   const body = await req.body;
-  // const finalRetrievalChain = await getFinalRetrievalChain();
   console.log(body);
   const stream = await finalRetrievalChain.stream({
     question: body.question
   }, { configurable: { sessionId: body.session_id } });
 
   res.setHeader('Content-Type', 'text/plain');
-  // console.log(isReadableStream(stream));
-  // res.status(200);
   for await (const chunk of stream) {
     res.write(chunk);
-    // res.send(chunk);
   }
-  // res.send( 'completed', 200 )
-  // res.end();
   res.send();
   console.log("------- response completed")
 
@@ -299,11 +216,3 @@ app.post('/', async (req, res) => {
 app.listen(port, () => {
   console.log(`WebAPI app listening on port ${port}`);
 });
-
-// http.createServer(function (req, res) {
-//   res.write('Hello World!'); //write a response to the client
-//   res.end(); //end the response
-// }).listen(8080); //the server object listens on port 8080
-
-// Deno.serve({ port }, handler);
-// Deno.serve(8080, handler);

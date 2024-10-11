@@ -17,7 +17,10 @@
     "qa-lesson1": "node --env-file .env.local src/deeplearningai/4questionanswering/lesson-1-q-a.js",
     "qa-lesson2": "node --env-file .env.local src/deeplearningai/4questionanswering/lesson-2-synthesizing-rsp.js",
     "cqa-lesson1": "node --env-file .env.local src/deeplearningai/5conversationalqanda/lesson-1-conv-q-a.js",
-    "cqa-lesson2": "node --env-file .env.local src/deeplearningai/5conversationalqanda/lesson-2-conv-q-a.js"
+    "cqa-lesson2": "node --env-file .env.local src/deeplearningai/5conversationalqanda/lesson-2-conv-q-a.js",
+    "web-server": "node --env-file .env.local src/deeplearningai/6shippingwebapi/webapi-server.js",
+    "web-client": "node --env-file .env.local src/deeplearningai/6shippingwebapi/webapi-client.js"
+
   },
   "author": "Indra Basak",
   "license": "ISC",

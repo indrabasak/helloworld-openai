@@ -1,3 +1,6 @@
+Build LLM Apps with LangChain.js
+======================================
+
 # Retrieval-Augmented Generation (RAG)
 Retrieval-Augmented Generation (RAG) enhances the output of Large Language Models (LLMs) by referencing an external 
 authoritative knowledge base before generating responses. This method extends LLM capabilities to specific domains 
