@@ -140,13 +140,6 @@ rephrase the follow up question to be a standalone question.`;
   });
 
   console.log(followupAnswer);
-
-  // const answer = await retrievalChain.invoke({
-  //   question: 'What are the prerequisites for this course?'
-  // });
-  //
-  // console.log('--- Augmented Generation ---');
-  // console.log(answer);
 }
 
 main().catch((err) => {
