@@ -1,22 +1,21 @@
-const { DefaultAzureCredential, getBearerTokenProvider, ClientSecretCredential } = require('@azure/identity');
-const { AzureOpenAIEmbeddings, AzureChatOpenAI } = require('@langchain/openai');
-// Peer dependency
-const parse = require('pdf-parse');
+// const Deno = require('deno');
+
 const { PDFLoader } = require('@langchain/community/document_loaders/fs/pdf');
 const { RecursiveCharacterTextSplitter } = require('@langchain/textsplitters');
 const { MemoryVectorStore } = require('langchain/vectorstores/memory');
-const { RunnableSequence, RunnableMap, RunnablePassthrough, RunnableWithMessageHistory } = require('@langchain/core/runnables');
+const { RunnableSequence, RunnablePassthrough, RunnableWithMessageHistory } = require('@langchain/core/runnables');
 const { ChatPromptTemplate, MessagesPlaceholder } = require('@langchain/core/prompts');
 const { StringOutputParser } = require('@langchain/core/output_parsers');
 const { HumanMessage, AIMessage } = require('@langchain/core/messages');
 const { ChatMessageHistory } = require('langchain/memory');
+const { getBearerTokenProvider, ClientSecretCredential } = require('@azure/identity');
+const { AzureOpenAIEmbeddings, AzureChatOpenAI } = require('@langchain/openai');
+const { HttpResponseOutputParser } = require('langchain/output_parsers');
+const express = require('express');
 
 require('dotenv').config();
 
-async function main() {
-  console.log('== Lesson 2 - Conversational Question & Answering Example - Pulling Together ==');
-
-  // const credential = new DefaultAzureCredential();
+async function getFinalRetrievalChain() {
   const credential =
     new ClientSecretCredential(process.env.AZURE_TENANT_ID,
       process.env.AZURE_CLIENT_ID,
@@ -24,10 +23,7 @@ async function main() {
       {
         authorityHost: process.env.AZURE_AUTHORITY_HOST,
       }
-      // {
-      //   authorityHost: process.env.AZURE_AUTHORITY_HOST + process.env.AZURE_FEDERATED_TOKEN_FILE,
-      // }
-      );
+    );
   const scope = 'https://cognitiveservices.azure.com/.default';
   const azureADTokenProvider = getBearerTokenProvider(credential, scope);
 
@@ -84,15 +80,15 @@ async function main() {
     = ChatPromptTemplate.fromTemplate(TEMPLATE_STRING);
   console.log(answerGenerationPrompt);
 
-  const runnableMap = RunnableMap.from({
-    context: documentRetrievalChain,
-    question: (input) => input.question,
-  });
-
-  let results = await runnableMap.invoke({
-    question: 'What are the prerequisites for this course?'
-  });
-  console.log(results);
+  // const runnableMap = RunnableMap.from({
+  //   context: documentRetrievalChain,
+  //   question: (input) => input.question,
+  // });
+  //
+  // let results = await runnableMap.invoke({
+  //   question: 'What are the prerequisites for this course?'
+  // });
+  // console.log(results);
 
   // Augmented generation
   const model = new AzureChatOpenAI({
@@ -175,35 +171,139 @@ rephrase the follow up question to be a standalone question.`;
     new StringOutputParser(),
   ]);
 
-  const messageHistory = new ChatMessageHistory();
+  /*
+  const conversationalRetrievalChain = RunnableSequence.from([
+  RunnablePassthrough.assign({
+    standalone_question: rephraseQuestionChain,
+  }),
+  RunnablePassthrough.assign({
+    context: documentRetrievalChain,
+  }),
+  answerGenerationChainPrompt,
+  new ChatOpenAI({ modelName: "gpt-3.5-turbo-1106" }),
+]);
+   */
+
+  // "text/event-stream" is also supported
+  const httpResponseOutputParser = new HttpResponseOutputParser({
+    contentType: 'text/plain'
+  });
+
+  // const messageHistory = new ChatMessageHistory();
+  // finalRetrievalChain = new RunnableWithMessageHistory({
+  //   runnable: conversationalRetrievalChain,
+  //   getMessageHistory: (_sessionId) => messageHistory,
+  //   historyMessagesKey: 'history',
+  //   inputMessagesKey: 'question',
+  // }).pipe(httpResponseOutputParser);
+
+  const messageHistories = {};
+
+  const getMessageHistoryForSession = (sessionId) => {
+    if (messageHistories[sessionId] !== undefined) {
+      return messageHistories[sessionId];
+    }
+    const newChatSessionHistory = new ChatMessageHistory();
+    messageHistories[sessionId] = newChatSessionHistory;
+    return newChatSessionHistory;
+  };
 
   const finalRetrievalChain = new RunnableWithMessageHistory({
     runnable: conversationalRetrievalChain,
-    getMessageHistory: (_sessionId) => messageHistory,
-    historyMessagesKey: 'history',
+    getMessageHistory: getMessageHistoryForSession,
     inputMessagesKey: 'question',
-  });
+    historyMessagesKey: 'history',
+  }).pipe(httpResponseOutputParser);
 
-  const originalQuestion = 'What are the prerequisites for this course?';
-
-  const originalAnswer = await finalRetrievalChain.invoke({
-    question: originalQuestion,
-  }, {
-    configurable: { sessionId: 'test' }
-  });
-  console.log(originalAnswer);
-
-  const finalResult = await finalRetrievalChain.invoke({
-    question: 'Can you list them in bullet point form?',
-  }, {
-    configurable: { sessionId: 'test' }
-  });
-
-  console.log(finalResult);
+  // const originalQuestion = 'What are the prerequisites for this course?';
+  //
+  // const originalAnswer = await finalRetrievalChain.invoke({
+  //   question: originalQuestion,
+  // }, {
+  //   configurable: { sessionId: 'test' }
+  // });
+  // console.log(originalAnswer);
+  //
+  // const finalResult = await finalRetrievalChain.invoke({
+  //   question: 'Can you list them in bullet point form?',
+  // }, {
+  //   configurable: { sessionId: 'test' }
+  // });
+  //
+  // console.log(finalResult);
+  console.log('end ------------- getFinalRetrievalChain');
+  return finalRetrievalChain;
 }
 
-main().catch((err) => {
-  console.error('The sample encountered an error:', err);
+// const handler = async (request) => {
+//   const body = await request.json();
+//   const stream = await getFinalRetrievalChain().stream({
+//     question: body.question
+//   }, { configurable: { sessionId: body.session_id } });
+//
+//   return new Response(stream, {
+//     status: 200,
+//     headers: {
+//       "Content-Type": "text/plain"
+//     },
+//   });
+// };
+
+// const handler = async (request, response) => {
+//   const body = await request.json();
+//   const stream = await getFinalRetrievalChain().stream({
+//     question: body.question
+//   }, { configurable: { sessionId: body.session_id } });
+//
+//   return new Response(stream, {
+//     status: 200,
+//     headers: {
+//       'Content-Type': 'text/plain'
+//     },
+//   });
+// };
+
+const app = express();
+app.use(express.json());
+const port = 3000;
+
+// const sessionMap = {};
+let finalRetrievalChain = null;
+app.post('/', async (req, res) => {
+  // res.send('Hello World!');
+  if (finalRetrievalChain === null) {
+    console.log('instantiating finalRetrievalChain --------------');
+    finalRetrievalChain = await getFinalRetrievalChain();
+  }
+  const body = await req.body;
+  // const finalRetrievalChain = await getFinalRetrievalChain();
+  console.log(body);
+  const stream = await finalRetrievalChain.stream({
+    question: body.question
+  }, { configurable: { sessionId: body.session_id } });
+
+  res.setHeader('Content-Type', 'text/plain');
+  // console.log(isReadableStream(stream));
+  // res.status(200);
+  for await (const chunk of stream) {
+    res.write(chunk);
+    // res.send(chunk);
+  }
+  // res.send( 'completed', 200 )
+  // res.end();
+  res.send();
+  console.log("------- response completed")
+
 });
 
-module.exports = { main };
+app.listen(port, () => {
+  console.log(`WebAPI app listening on port ${port}`);
+});
+
+// http.createServer(function (req, res) {
+//   res.write('Hello World!'); //write a response to the client
+//   res.end(); //end the response
+// }).listen(8080); //the server object listens on port 8080
+
+// Deno.serve({ port }, handler);
+// Deno.serve(8080, handler);
