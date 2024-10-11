@@ -78,7 +78,7 @@ async function main() {
     });
 
     let results = await runnableMap.invoke({
-        question: "What are the prerequisites for this course?"
+        question: 'What are the prerequisites for this course?'
     });
     console.log(results);
 
@@ -101,10 +101,10 @@ async function main() {
     ]);
 
     const answer = await retrievalChain.invoke({
-        question: "What are the prerequisites for this course?"
+        question: 'What are the prerequisites for this course?'
     });
 
-    console.log("--- Augmented Generation ---");
+    console.log('--- Augmented Generation ---');
     console.log(answer);
 }
 

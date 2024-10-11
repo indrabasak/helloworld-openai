@@ -15,7 +15,8 @@
     "ve-lesson1": "node --env-file .env.local src/deeplearningai/3vectorstoreembeddings/lesson-1-vstore-ingestion.js",
     "ve-lesson2": "node --env-file .env.local src/deeplearningai/3vectorstoreembeddings/lesson-2-ingestion-retriever.js",
     "qa-lesson1": "node --env-file .env.local src/deeplearningai/4questionanswering/lesson-1-q-a.js",
-    "qa-lesson2": "node --env-file .env.local src/deeplearningai/4questionanswering/lesson-2-synthesizing-rsp.js"
+    "qa-lesson2": "node --env-file .env.local src/deeplearningai/4questionanswering/lesson-2-synthesizing-rsp.js",
+    "cqa-lesson1": "node --env-file .env.local src/deeplearningai/5conversationalqanda/lesson-1-conv-q-a.js"
   },
   "author": "Indra Basak",
   "license": "ISC",
