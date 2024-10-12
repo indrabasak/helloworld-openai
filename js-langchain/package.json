@@ -19,8 +19,8 @@
     "cqa-lesson1": "node --env-file .env.local src/deeplearningai/5conversationalqanda/lesson-1-conv-q-a.js",
     "cqa-lesson2": "node --env-file .env.local src/deeplearningai/5conversationalqanda/lesson-2-conv-q-a.js",
     "web-server": "node --env-file .env.local src/deeplearningai/6shippingwebapi/webapi-server.js",
-    "web-client": "node --env-file .env.local src/deeplearningai/6shippingwebapi/webapi-client.js"
-
+    "web-client": "node --env-file .env.local src/deeplearningai/6shippingwebapi/webapi-client.js",
+    "process-log": "node --env-file .env.local src/processlog/log-processor.js"
   },
   "author": "Indra Basak",
   "license": "ISC",
@@ -33,6 +33,7 @@
     "deno": "^0.1.1",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "fs": "^0.0.1-security",
     "he": "^1.2.0",
     "http": "^0.0.1-security",
     "ignore": "^6.0.2",
