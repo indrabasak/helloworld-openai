@@ -209,7 +209,7 @@ app.post('/', async (req, res) => {
     res.write(chunk);
   }
   res.send();
-  console.log("------- response completed")
+  console.log('------- response completed');
 
 });
 
