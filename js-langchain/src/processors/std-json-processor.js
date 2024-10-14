@@ -9,11 +9,10 @@ const { ChatPromptTemplate, MessagesPlaceholder } = require('@langchain/core/pro
 const { StringOutputParser } = require('@langchain/core/output_parsers');
 const { HumanMessage, AIMessage } = require('@langchain/core/messages');
 const { ChatMessageHistory } = require('langchain/memory');
-// const { JSONLoader } = require('@langchain/community/document_loaders/fs/json');
 const { JSONLoader } = require('langchain/document_loaders/fs/json');
-// const { readFileSync } = require('fs');
-// const { PDFLoader } = require('@langchain/community/document_loaders/fs/pdf');
 const { UnstructuredLoader } = require('@langchain/community/document_loaders/fs/unstructured');
+const { Document }  = require('langchain/document');
+const { readFileSync } = require('fs');
 
 require('dotenv').config();
 
@@ -39,14 +38,19 @@ async function main() {
     // chunkOverlap: 128
   });
 
-  const loader = new JSONLoader('./data/logs-01.json');
+  // const loader = new JSONLoader('./data/logs-01.json');
+  const loader = new JSONLoader('./data/logs-01.json', ['/sage-id', '/meta/rule']);
   // const loader = new UnstructuredLoader('./data/logs-01.json');
   const rawLog = await loader.load();
   console.log(rawLog);
-  const splitDocs = await splitter.splitDocuments(rawLog);
+  // const splitDocs = await splitter.splitDocuments(rawLog);
 
   // const data = readFileSync('./data/logs-01.json', 'utf8');
   // const jsonData = JSON.parse(data);
+  // const docs = [
+  //   new Document({ pageContent: jsonData})
+  // ];
+  // console.log(docs);
 
   const embeddings = new AzureOpenAIEmbeddings({
     azureADTokenProvider,
@@ -55,8 +59,9 @@ async function main() {
     azureOpenAIApiVersion: process.env.AZURE_OPENAI_API_VERSION,
   });
   const vectorstore = new MemoryVectorStore(embeddings);
-  await vectorstore.addDocuments(splitDocs);
-  // await vectorstore.addDocuments(rawLog);
+  // await vectorstore.addDocuments(splitDocs);
+  // await vectorstore.addDocuments(docs);
+  await vectorstore.addDocuments(rawLog);
   const retriever = vectorstore.asRetriever();
 
   // Document retrieval in a chain
@@ -187,7 +192,8 @@ rephrase the follow up question to be a standalone question.`;
     inputMessagesKey: 'question',
   });
 
-  const originalQuestion = 'Is there a sage-id?';
+  // const originalQuestion = 'Is there a sage-id?';
+  const originalQuestion = 'What are the rules you have come across?';
 
   const originalAnswer = await finalRetrievalChain.invoke({
     question: originalQuestion,
