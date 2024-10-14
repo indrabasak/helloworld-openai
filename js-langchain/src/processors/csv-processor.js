@@ -17,6 +17,7 @@ const { MemoryVectorStore } = require('langchain/vectorstores/memory');
 const { AttributeInfo } = require('langchain/chains/query_constructor');
 const { SelfQueryRetriever } = require('langchain/retrievers/self_query');
 const { FunctionalTranslator } = require('@langchain/core/structured_query');
+const { Chroma } = require('@langchain/community/vectorstores/chroma');
 require('dotenv').config();
 
 class StripBomStream extends Transform {
@@ -114,8 +115,21 @@ async function main() {
     azureOpenAIApiDeploymentName: 'text-embedding-ada-002-blue',
     azureOpenAIApiVersion: process.env.AZURE_OPENAI_API_VERSION
   });
+
   const vectorStore = new MemoryVectorStore(embeddings);
   await vectorStore.addDocuments(splitDocs);
+
+  // with Chroma DB
+  // docker pull chromadb/chroma
+  // docker run -p 8000:8000 chromadb/chroma
+  // const vectorStore = new Chroma(embeddings, {
+  //   collectionName: "a-test-collection",
+  //   url: "http://localhost:8000", // Optional, will default to this value
+  //   collectionMetadata: {
+  //     "hnsw:space": "cosine",
+  //   }, // Optional, can be used to specify the distance method of the embedding space https://docs.trychroma.com/usage-guide#changing-the-distance-function
+  // });
+  // await vectorStore.addDocuments(splitDocs);
 
   // Query the vector database for information.
   const query = 'Heart rate monitor';
@@ -137,6 +151,8 @@ async function main() {
     new AttributeInfo('Description', 'string', 'Description of the product'),
     new AttributeInfo('Features', 'string', 'Features of the product'),
   ];
+
+  // works also
   // const attributeInfo = [
   //   {
   //     name: 'Product Name',
@@ -182,7 +198,14 @@ async function main() {
     structuredQueryTranslator: new FunctionalTranslator(),
   });
 
-  await retriever.invoke('good heart monitor');
+  console.log('-----------------------------------');
+  const result = await retriever.invoke('good heart monitor');
+  // for (const doc of result) {
+  //   console.log(doc);
+  // }
+
+  console.log(result[0].pageContent);
+  console.log(result[0].metadata);
 
 }
 
