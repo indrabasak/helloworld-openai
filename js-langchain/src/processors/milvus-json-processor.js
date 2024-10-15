@@ -114,7 +114,17 @@ async function search(client, searchVector) {
         'anns_field': 'vector',
         'data': searchVector,
         'params': {
-          'nprobe': 10
+          // Number of units to query during the search.The value falls in the range [1, nlist[1]].
+          'nprobe': 10,
+
+          // How to measure similarity between vector embeddings.
+          // Possible values are IP, L2, COSINE, JACCARD, and HAMMING, and defaults to that of the loaded index file.
+          'metric_type': 'L2',
+
+          // Search precision level.
+          // Possible values are 1, 2, and 3, and defaults to 1.
+          // Higher values yield more accurate results but slower performance.
+          'radius': 3.0
         }
       }
     ],
@@ -148,7 +158,8 @@ async function main() {
     'event-id': '44fd608a-8928-766b-644c-901bc6b8fbef',
     'payload-id': sageId,
     rule: 'rule-default',
-    'sage-id': sageId,
+    // 'sage-id': sageId,
+    id: sageId,
     'span-id': 'fb1666bcca23029c',
     state: 'DATABASE_OPERATION',
     'trace-id': '008bf4837f5c9cbbb334b3b46320b79b'
@@ -197,7 +208,7 @@ async function main() {
   const vector = await embeddings.embedQuery(text);
   await insertData(client, vector, event);
 
-  const query = `What is the payload-id for the sage-id ${sageId}?`;
+  const query = `What is the event for id ${sageId}?`;
   const queryVector = await embeddings.embedQuery(query);
   await search(client, queryVector);
 }
