@@ -21,7 +21,10 @@
     "web-server": "node --env-file .env.local src/deeplearningai/6shippingwebapi/webapi-server.js",
     "web-client": "node --env-file .env.local src/deeplearningai/6shippingwebapi/webapi-client.js",
     "process-json": "node --env-file .env.local src/processors/std-json-processor.js",
-    "process-csv": "node --env-file .env.local src/processors/csv-processor.js"
+    "process-csv": "node --env-file .env.local src/processors/csv-processor.js",
+    "custom-process-json": "node --env-file .env.local src/processors/custom-json-processor.js",
+    "milvus-process-json": "node --env-file .env.local src/processors/milvus-json-processor.js",
+    "milvus-search": "node --env-file .env.local src/processors/milvus-search.js"
   },
   "author": "Indra Basak",
   "license": "ISC",
@@ -31,6 +34,7 @@
     "@langchain/core": "^0.3.1",
     "@langchain/openai": "^0.3.0",
     "@langchain/textsplitters": "^0.1.0",
+    "@zilliz/milvus2-sdk-node": "^2.4.9",
     "chromadb": "^1.9.2",
     "csv-parser": "^3.0.0",
     "deno": "^0.1.1",
@@ -44,7 +48,8 @@
     "ml-distance": "^4.0.1",
     "pdf-parse": "^1.1.1",
     "readline": "^1.3.0",
-    "stream": "^0.0.3"
+    "stream": "^0.0.3",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.1.0",

@@ -60,6 +60,11 @@ async function main() {
     results = await documentRetrievalChain.invoke({
         question: 'What is deep learning?'
     });
+
+    console.log('*****************************');
+    results = await documentRetrievalChain.invoke({
+        question: 'What is indra?'
+    });
 }
 
 main().catch((err) => {
