@@ -1502,7 +1502,7 @@ async function main() {
   const query = 'What is the payload-id for the sage-id 67ac182f-701e-4191-bef3-33a2c727efb?';
   const queryVector = await embeddings.embedQuery(query);
   console.log(queryVector);
-  await search(client, queryVector)
+  await search(client, queryVector);
 }
 
 main().catch((err) => {

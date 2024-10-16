@@ -23,8 +23,10 @@
     "process-json": "node --env-file .env.local src/processors/std-json-processor.js",
     "process-csv": "node --env-file .env.local src/processors/csv-processor.js",
     "custom-process-json": "node --env-file .env.local src/processors/custom-json-processor.js",
-    "milvus-process-json": "node --env-file .env.local src/processors/milvus-json-processor.js",
-    "milvus-search": "node --env-file .env.local src/processors/milvus-search.js"
+    "milvus-process-json": "node --env-file .env.local src/processors/milvus/milvus-json-processor.js",
+    "milvus-search": "node --env-file .env.local src/processors/milvus/milvus-search.js",
+    "milvus-student": "node --env-file .env.local src/processors/milvus/milvus-students-example.js",
+    "milvus-langchain": "node --env-file .env.local src/processors/milvus/milvus-langchain-example.js"
   },
   "author": "Indra Basak",
   "license": "ISC",
