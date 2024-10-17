@@ -20,3 +20,13 @@ The docker container starts up at port 19530.
 ### Attu Server
 docker run -p 8000:3000 -e MILVUS_URL={milvus server IP}:19530 zilliz/attu:v2.4
 172.17.0.2:19530
+
+## SQLite
+https://database.guide/2-sample-databases-sqlite/
+
+Chinook Database
+https://github.com/lerocha/chinook-database
+
+from sqlite folder
+sqlite3 chinook.db
+.read Chinook_Sqlite.sql

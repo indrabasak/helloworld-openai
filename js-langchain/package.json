@@ -28,14 +28,15 @@
     "milvus-student": "node --env-file .env.local src/processors/milvus/milvus-students-example.js",
     "milvus-langchain": "node --env-file .env.local src/processors/milvus/milvus-langchain-example.js",
     "json-toolkit": "node --env-file .env.local src/toolkits/json-toolkit-example.js",
-    "wiki-toolkit": "node --env-file .env.local src/toolkits/wikipedia-toolkit-example.js"
+    "wiki-toolkit": "node --env-file .env.local src/toolkits/wikipedia-toolkit-example.js",
+    "sql-toolkit": "node --env-file .env.local src/toolkits/sql-toolkit-example.js"
   },
   "author": "Indra Basak",
   "license": "ISC",
   "dependencies": {
     "@azure/identity": "^4.4.1",
     "@langchain/community": "^0.3.1",
-    "@langchain/core": "^0.3.1",
+    "@langchain/core": "^0.3.11",
     "@langchain/openai": "^0.3.0",
     "@langchain/textsplitters": "^0.1.0",
     "@zilliz/milvus2-sdk-node": "^2.4.9",
@@ -53,7 +54,9 @@
     "ml-distance": "^4.0.1",
     "pdf-parse": "^1.1.1",
     "readline": "^1.3.0",
+    "sqlite3": "^5.1.7",
     "stream": "^0.0.3",
+    "typeorm": "^0.3.20",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
