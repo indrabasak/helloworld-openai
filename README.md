@@ -28,5 +28,7 @@ Chinook Database
 https://github.com/lerocha/chinook-database
 
 from sqlite folder
+```
 sqlite3 chinook.db
 .read Chinook_Sqlite.sql
+```
