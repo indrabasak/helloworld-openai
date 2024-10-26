@@ -1,3 +1,23 @@
+/**
+ * This example demonstrates how to use the SQL toolkit to execute a SQL query.
+ * This example uses the Chinook SQLite database. It's a sample database that
+ * represents a digital media store. This example is provided by LangchainJs.
+ *
+ * Here's the instruction on how to use this example:
+ * 1. Create the events.db SQLite database using the schema, Chinook_Sqlite.sql, in the sqlite folder.
+ * 2. Create the events.db by executing the following commands in MacOS:
+ * ```
+ * $ sqlite3 chinook.db
+ * sqlite> .read sqlite/Chinook_Sqlite.sql
+ * ```
+ * 3. Set the environment variables my modifying the .env.local file in the root directory.
+ * 4. Run the script executing the following command:
+ * ```
+ * yarn node --env-file .env.local src/toolkits/sql-toolkit-example.js
+ *
+ * @author Indra Basak
+ * @since Oct 16, 2024
+ */
 const { ClientSecretCredential, getBearerTokenProvider } = require('@azure/identity');
 const { AzureChatOpenAI } = require('@langchain/openai');
 const { DataSource } = require('typeorm');
@@ -26,8 +46,8 @@ async function main() {
   });
 
   const datasource = new DataSource({
-    type: "sqlite",
-    database: "../sqlite/Chinook.db", // Replace with the link to your database
+    type: 'sqlite',
+    database: '../sqlite/Chinook.db', // Replace with the link to your database
   });
   const db = await SqlDatabase.fromDataSourceParams({
     appDataSource: datasource,
@@ -44,7 +64,7 @@ async function main() {
   );
 
   const executor = createSqlAgent(model, toolkit);
-  const input = `List the total sales per country. Which country's customers spent the most?`;
+  const input = 'List the total sales per country. Which country\'s customers spent the most?';
   console.log(`Executing with input "${input}"...`);
   const result = await executor.invoke({ input });
   console.log(`Got output ${result.output}`);

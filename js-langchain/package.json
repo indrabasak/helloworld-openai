@@ -30,7 +30,8 @@
     "json-toolkit": "node --env-file .env.local src/toolkits/json-toolkit-example.js",
     "wiki-toolkit": "node --env-file .env.local src/toolkits/wikipedia-toolkit-example.js",
     "sql-toolkit": "node --env-file .env.local src/toolkits/sql-toolkit-example.js",
-    "events-toolkit": "node --env-file .env.local src/toolkits/events-sql-toolkit-example.js"
+    "events-toolkit": "node --env-file .env.local src/toolkits/events-sql-toolkit-example.js",
+    "events-adv-toolkit": "node --env-file .env.local src/toolkits/events-adv-sql-example.js"
   },
   "author": "Indra Basak",
   "license": "ISC",
