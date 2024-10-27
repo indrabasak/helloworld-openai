@@ -31,7 +31,8 @@
     "wiki-toolkit": "node --env-file .env.local src/toolkits/wikipedia-toolkit-example.js",
     "sql-toolkit": "node --env-file .env.local src/toolkits/sql-toolkit-example.js",
     "events-toolkit": "node --env-file .env.local src/toolkits/events-sql-toolkit-example.js",
-    "events-adv-toolkit": "node --env-file .env.local src/toolkits/events-adv-sql-example.js"
+    "events-adv-toolkit": "node --env-file .env.local src/toolkits/events-adv-sql-example.js",
+    "events-mongo": "node --env-file .env.local src/mongo/events-mongo-example.js"
   },
   "author": "Indra Basak",
   "license": "ISC",
@@ -54,6 +55,7 @@
     "js-yaml": "^4.1.0",
     "langchain": "^0.3.2",
     "ml-distance": "^4.0.1",
+    "mongodb": "^6.10.0",
     "pdf-parse": "^1.1.1",
     "readline": "^1.3.0",
     "sqlite3": "^5.1.7",
