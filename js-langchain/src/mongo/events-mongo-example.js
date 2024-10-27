@@ -113,8 +113,8 @@ async function main() {
       - 'TARGET_DELIVERY_SUCCESSFUL'
       - 'TARGET_DELIVERY_FAILURE'
     - **description**: the status description of an event
-    - **creation-time**: the ISO 8601 time when the event was first received by SAGE
-    - **updated-time**: the ISO 8601 time when the event was last updated by SAGE
+    - **creation-time**: the date when the event was first received by SAGE
+    - **updated-time**: the date when the event was last updated by SAGE
 
   Note the following:
     - The table contains data for events that have occurred in the past.
@@ -126,13 +126,16 @@ async function main() {
     - Target is same as destination.
     - Always ignore rules named 'rule-default'
     - Always sort the events by updated-time in descending order.
-    - Always add the limit size of 10
-    - When a time period is not specified in the question, consider the time period as the last 24 hours.
+    - Always add the limit size of 50
+    - The 'updated-time' and 'creation-time' fields are MongoDB Date objects.
+    - When a time is not specified in the question, consider the time period as the last 24 hours.
     - When the question refers to a time period like 'past month', 'past week', or 'past year', translate this into a dynamic date range in the MongoDB query. 
     - For instance, 'past month' should be translated into a range from the current date back to the same day of the previous month. 
     - The 'past week' should be translated into a range from the current date back to the same day of the previous week.
+    - Always use 'ISODate' for date comparison in the query.
     - Always use double quotes for MongoDB operators in the query. Here's a few examples of operators, '$match', '$project', '$cond', '$in', '$not', '$regex', etc. in the query.
     - Example '$match' should be written as '"$match"'. 
+    - The MongoDB query has to be compatible with AWS DocumentDB. DocumentDB does not support all MongoDB operators, e.g., '$subtract', '$date', etc.
     - Never return invalid queries. 
   
   Question: {question}
