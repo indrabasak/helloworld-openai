@@ -5,7 +5,8 @@ const { SqlDatabase } = require('langchain/sql_db');
 const { SqlToolkit } = require('langchain/agents/toolkits/sql');
 const { ChatPromptTemplate, MessagesPlaceholder } = require('@langchain/core/prompts');
 const { RunnablePassthrough, RunnableSequence } = require('@langchain/core/runnables');
-const { StringOutputParser } = require('@langchain/core/output_parsers');
+const { StringOutputParser, JsonOutputParser, StructuredOutputParser } = require('@langchain/core/output_parsers');
+const { z } = require( 'zod');
 const { MongoUtil } = require('./mongo-util');
 
 async function main() {
@@ -128,14 +129,18 @@ async function main() {
     - Always sort the events by updated-time in descending order.
     - Always add the limit size of 50
     - The 'updated-time' and 'creation-time' fields are MongoDB Date objects.
-    - When a time is not specified in the question, consider the time period as the last 24 hours.
+    - Always use the 'updated-time' field for date comparison in the query.
+    - If time is not specified in the question, use the time period as the last 24 hours from now. Here's an example of a time period: 'past month', 'past week', 'past year'.
+    - The example query 'List the source and destinations of failed events?' should be interpreted as 'List the source and destinations of failed events in the last 24 hours?'
     - When the question refers to a time period like 'past month', 'past week', or 'past year', translate this into a dynamic date range in the MongoDB query. 
     - For instance, 'past month' should be translated into a range from the current date back to the same day of the previous month. 
     - The 'past week' should be translated into a range from the current date back to the same day of the previous week.
-    - Always use 'ISODate' for date comparison in the query.
+    - Always use current date and time in the format 'YYYY-MM-DD HH:mm:ss'. Ensure that the script dynamically calculates and uses the current date and time each time it is run.
+    - Always use a Date object for date comparison in the query. Do not use 'ISODate'. Here's an example of a date object: 'new Date()'.
     - Always use double quotes for MongoDB operators in the query. Here's a few examples of operators, '$match', '$project', '$cond', '$in', '$not', '$regex', etc. in the query.
     - Example '$match' should be written as '"$match"'. 
-    - The MongoDB query has to be compatible with AWS DocumentDB. DocumentDB does not support all MongoDB operators, e.g., '$subtract', '$date', etc.
+    - The following operators must not be used in the query: '$date', '$multiply'. 
+    - The query output should be valid JSON object.
     - Never return invalid queries. 
   
   Question: {question}
@@ -154,12 +159,29 @@ async function main() {
   // console.log(JSON.parse(JSON.stringify(chainResult.content)));
   // console.log('2b ------------------------------');
 
+  // Define the schema for your aggregation pipeline using Zod
+//   const schema = z.object({
+//     pipeline: z.array(
+//       z.object({
+//         $match: z.object({
+//           date: z.date(),
+//           // Add other match conditions as needed
+//         }),
+//         // Add other aggregation stages and their schemas as needed
+//       })
+//     ),
+//   });
+//
+// // Create the parser using the schema
+//   const parser = StructuredOutputParser.fromZodSchema(schema);
 
   const queryGeneratorChain
     = RunnableSequence.from([
     new RunnablePassthrough(),
     queryGenerationPrompt,
     model.bind({ stop: ['\nMongoDbResult:'] }),
+    // parser]);
+    // new JsonOutputParser()])
     new StringOutputParser()]);
 
   // console.log('1---------------------------');
@@ -180,7 +202,7 @@ async function main() {
 //
   const responseTemplate = `Based on the collection schema below, question, MongoDB aggregation 
   pipeline query, and MongoDB response, write a natural language response and format
-  result in html table if there is more than 1.
+  the result as table if there is more than 1.
   
   Note the following:
     - When the MongoDB response is empty, answer 'No data found'.
@@ -207,8 +229,8 @@ async function main() {
   let result = await completeChain.invoke({ question: 'List the source and destinations of failed events?' });
   console.log(result);
 
-  result = await completeChain.invoke({ question: 'List the source and destinations of failed events in the last one month?' });
-  console.log(result);
+  // result = await completeChain.invoke({ question: 'List the source and destinations of failed events in the last one month?' });
+  // console.log(result);
 //
 // result = await completeChain.invoke({question: 'How many failed events?'});
 // console.log(result);
